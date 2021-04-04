@@ -52,4 +52,6 @@ ENV FORCE_CUDA="1"
 RUN cd maskrcnn-benchmark \
  && python setup.py build develop
 
+WORKDIR /car_server
+CMD ["python", "./server.py"]
 
