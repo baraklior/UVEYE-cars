@@ -29,18 +29,27 @@ ENV CONDA_PREFIX=/miniconda/envs/$CONDA_DEFAULT_ENV
 ENV PATH=$CONDA_PREFIX/bin:$PATH
 ENV CONDA_AUTO_UPDATE_CONDA=false
 
-RUN conda install -y ipython pytorch torchvision cudatoolkit=10.2 -c pytorch \
+RUN conda install -y ipython \
     && /miniconda/bin/conda clean -ya \
-    && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir ninja yacs cython matplotlib opencv-python flask
+    && rm -rf /var/lib/apt/lists/*
+
+RUN conda install -y pytorch cudatoolkit=10.2 -c pytorch \
+    && /miniconda/bin/conda clean -ya \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir ninja yacs cython matplotlib opencv-python flask
     #NOTE: Python 3.9 users will need to add '-c=conda-forge' for installation
+
+RUN git clone https://github.com/pytorch/vision.git \
+ && cd vision \
+ && git fetch && git fetch --tags && git checkout v0.3.0 \
+ && python setup.py install
 
 # install pycocotools
 RUN git clone https://github.com/cocodataset/cocoapi.git \
  && cd cocoapi/PythonAPI \
  && python setup.py build_ext install
 
-# install PyTorch Detection
 COPY . .
 ENV FORCE_CUDA="1"
 # RUN git clone https://github.com/facebookresearch/maskrcnn-benchmark.git \
