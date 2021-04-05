@@ -12,7 +12,7 @@ def hello():
     return "Hello UVEye!"
 
 
-@app.route("/process", methods=['GET'])
+@app.route("/process", methods=['POST'])
 def process():
     try:
         content = request.json
